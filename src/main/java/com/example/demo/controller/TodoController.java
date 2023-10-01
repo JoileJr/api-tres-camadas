@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.dto.TodoDTO;
+import com.example.demo.service.TodoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,35 +15,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.Todo;
-import com.example.demo.repository.TodoRepository;
-
 @RestController
-@RequestMapping("api/")
+@RequiredArgsConstructor
+@RequestMapping("api/todo")
 public class TodoController {
 
-    @Autowired
-    private TodoRepository todoRepository;
+    private final TodoService todoService;
 
     @GetMapping
-    public List<Todo> buscarTodos(){
-       return todoRepository.findAll();
+    public List<TodoDTO> getListTodo(){
+        return todoService.getListTodo();
     }
 
     @PostMapping
-    public Todo inserir(@RequestBody Todo todo){
-        return todoRepository.save(todo);
+    public TodoDTO create(@RequestBody TodoDTO todo){
+        return todoService.create(todo);
     }
 
     @PutMapping
-    public Todo alterar(@RequestBody Todo todo){
-        return todoRepository.save(todo);
+    public TodoDTO update(@RequestBody TodoDTO todo){
+        return todoService.update(todo);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> excluir(@PathVariable("id") Long id){
-        Optional<Todo> obj = todoRepository.findById(id);
-        todoRepository.delete(obj.get());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Long id){
+        todoService.delete(id);
         return ResponseEntity.ok("Excluido com sucesso");
     }
 }
